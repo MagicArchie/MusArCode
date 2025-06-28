@@ -1,0 +1,145 @@
+<html>
+  <head>
+    <meta charset="UTF-8"> <!-- Fixes encoding -->
+    <!-- Meta tag for responsive design to ensure the AR experience adapts to various screen sizes -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Include the MindAR.js library to handle AR features -->
+    <script src="./libs/mindar/mindar-image-three.prod.js"></script>
+    
+    <!-- Link to the main JavaScript file, where the AR experience and button functionality are implemented -->
+    <script src="./main.js" type="module"></script>
+    
+    <style>
+      /* Global styling to ensure the body and html take up the full screen and prevent overflow */
+      html, body {
+        position: relative;
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        font-family: Arial, sans-serif;
+      }
+
+      /* Header section containing the title and buttons, centered at the top of the page */
+      #header {
+		position: absolute;
+		top: 10px; 
+		left: 50%;
+		transform: translateX(-50%);
+		text-align: center;
+		z-index: 10;
+		width: 90%;
+		max-width: 700px;
+	  }
+
+      /* Styling for the heading text */
+      h1 {
+        margin: 0;
+		padding: 20px 10px 20px; /* ⬅ added bottom padding */
+		font-size: 24px;
+		font-weight: bold;
+		color: #333;
+		max-width: 100%;
+		line-height: 1.4;
+      }
+	  
+	  #actionButtons {
+	    display: flex;
+	    justify-content: center;
+	    gap: 10px;
+	    margin-bottom: 10px;
+	  }
+
+	  #navigationButtons {
+	    text-align: center;
+	  }
+
+	  button {
+	    padding: 10px 20px;
+	    font-size: 16px;
+	    cursor: pointer;
+		border-radius: 10px;
+		background-color: #dbcca0; /* Optional: semi-transparent white */
+		border: 2px solid #5e3b1d; /* ⬅ dark brown stroke */
+		transition: background-color 0.15s ease; /* Smooth transition */
+	  }
+	  
+	  #uiOverlay {
+		z-index: 10;
+		position: absolute;
+	    width: 100%;
+	    height: 100%;
+	    top: 0;
+	    left: 0;
+	    text-align: center;
+      }
+	  
+	  #backgroundLayer {
+		  position: absolute;
+		  width: 100%;
+		  height: 100%;
+		  top: 0;
+		  left: 0;
+		  background-image: url('../assets/mainPage/MainPage_BG.jpg');
+		  background-size: cover;
+		  background-position: center;
+		  background-repeat: no-repeat;
+		  z-index: 0;
+      }
+
+	  button:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+      }
+	  
+	  button:active {
+		background-color: #a67c52;
+		transform: scale(0.97); /* button shrinks slightly when pressed */
+	  }
+	  
+	  button {
+		-webkit-tap-highlight-color: transparent;
+	  }
+	  
+  @font-face {
+    font-family: 'EnglishFont';
+    src: url('../../../assets/fonts/EnglishFont.ttf') format('truetype');
+  }
+
+  @font-face {
+    font-family: 'GreekFont';
+    src: url('../../../assets/fonts/GreekFont.otf') format('opentype');
+  }
+
+  body {
+    font-family: 'EnglishFont', sans-serif;
+  }
+
+  body.gr {
+    font-family: 'GreekFont', sans-serif;
+  }
+
+    </style>
+  </head>
+  
+  <body>
+    <div id="backgroundLayer"></div>
+	
+    <!-- Header section with the title and buttons -->
+	<div id="uiOverlay">
+		<div id="header">
+		  <h1>Let the game begin</h1> <!-- Title displayed in the center -->
+		  <div id="buttons">
+		  <div id="actionButtons">
+			<button id="startButton">Start</button>
+			<button id="stopButton" disabled>Stop</button>
+		  </div>
+		  <div id="navigationButtons">
+			<button id="backButton">⬅ Go Back</button>
+		  </div>
+		</div>
+		</div>
+	</div>
+  </body>
+</html>

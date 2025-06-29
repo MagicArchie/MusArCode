@@ -441,8 +441,6 @@ function windowResized() {
 }
 
 function mousePressed() {
-  //autoRevealCount = Math.min(autoRevealCount, maxAuto);
-
   // === Handle menu closing ===
   if (menuBar.elt.style.display !== 'none') {
     let isOverScan = isMouseOver(scanButton);
@@ -450,12 +448,14 @@ function mousePressed() {
     let isOverExit = isMouseOver(exitButton);
 
     if (!isOverScan && !isOverLang && !isOverExit) {
-	  MenuClose_SFX.setVolume(0.8);
-      MenuClose_SFX.play(); 
-  
-      hideMenuBar();
-      return;
+      setTimeout(() => {
+        MenuClose_SFX.setVolume(0.8);
+        MenuClose_SFX.play();
+        hideMenuBar();
+      }, 50);
     }
+
+    return;
   }
 
   // === Handle language menu closing ===
@@ -525,14 +525,26 @@ function revealCurrentProgress() {
   }
 }
 
-function isMouseOver(button) {
-  let x = button.position().x;
-  let y = button.position().y;
-  let w = button.width;
-  let h = button.height;
-  return mouseX >= x && mouseX <= x + w && mouseY >= y && mouseY <= y + h;
-}
+function isMouseOver(btn) {
+  let bounds = btn.elt.getBoundingClientRect();
 
+  // Use mouse position for desktop
+  let x = mouseX;
+  let y = mouseY;
+
+  // Use touch position for mobile
+  if (touches.length > 0) {
+    x = touches[0].x;
+    y = touches[0].y;
+  }
+
+  return (
+    x >= bounds.left &&
+    x <= bounds.right &&
+    y >= bounds.top &&
+    y <= bounds.bottom
+  );
+}
 
 function menuButtonPressed() {
   if (StartBarrier == false && fullscreenActivated) {

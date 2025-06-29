@@ -4,6 +4,9 @@ let selectedDifficulty = null;
 let pirateFont;
 let startEnabled = false; // prevent clicking Start until ready
 
+let StartBarrier = true;
+let fullscreenActivated = false;
+
 let selectedLanguage = localStorage.getItem('selectedLanguage') || 'en'; // Default to English
 let selectedLanguageOnOf = localStorage.getItem('selectedLanguageOnOf') || 'on'; //Default to ON
 
@@ -17,8 +20,11 @@ function preload() {
   StartBT2_SFX = loadSound('assets/sounds/BT_SFX3.mp3');
 }
 
+let canvas;
+
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  canvas = createCanvas(windowWidth, windowHeight);  //Store canvas
+  canvas.mousePressed(initInteraction);              //Attach fullscreen logic to canvas
   textAlign(CENTER, CENTER);
   textFont('Georgia');
 
@@ -74,58 +80,77 @@ function draw() {
 
 }
 
+function initInteraction() {
+  if (!fullscreenActivated) {
+    fullscreen(true);
+    fullscreenActivated = true;
+    console.log("Fullscreen triggered by canvas");
+  }
+
+  if (StartBarrier) {
+    StartBarrier = false;
+    console.log("StartBarrier released");
+  }
+}
+
 function setDifficulty(level) {
-  
-  DifficultyBT_SFX.setVolume(0.8);
-  DifficultyBT_SFX.play();
-  
-  selectedDifficulty = level;
-  localStorage.setItem('selectedDifficulty', level); // Store in localStorage
-  console.log(`Difficulty set to ${level}`);
+  if (StartBarrier == false) {
+	  DifficultyBT_SFX.setVolume(0.8);
+	  DifficultyBT_SFX.play();
+	  
+	  selectedDifficulty = level;
+	  localStorage.setItem('selectedDifficulty', level); // Store in localStorage
+	  console.log(`Difficulty set to ${level}`);
 
-  // Enable Start Button
-  startEnabled = true;
+	  // Enable Start Button
+	  startEnabled = true;
 
-  if (level === 'Junior Hunt') {
-    btnHard.attribute('src', 'assets/buttons/MasterHuntBT_Normal.png');
-    btnEasy.attribute('src', 'assets/buttons/JuniorHuntBT_Pressed.png');
-    setTimeout(() => {
-      btnEasy.attribute('src', 'assets/buttons/JuniorHuntBT_Selected.png');
-    }, 400);
-    console.log('Junior Hunt: 6 fun locations to explore!');
-  } else if (level === 'Master Hunt') {
-    btnEasy.attribute('src', 'assets/buttons/JuniorHuntBT_Normal.png');
-    btnHard.attribute('src', 'assets/buttons/MasterHuntBT_Pressed.png');
-    setTimeout(() => {
-      btnHard.attribute('src', 'assets/buttons/MasterHuntBT_Selected.png');
-    }, 400);
-    console.log('Master Hunt: 12 adventurous stops ahead!');
+	  if (level === 'Junior Hunt') {
+		btnHard.attribute('src', 'assets/buttons/MasterHuntBT_Normal.png');
+		btnEasy.attribute('src', 'assets/buttons/JuniorHuntBT_Pressed.png');
+		setTimeout(() => {
+		  btnEasy.attribute('src', 'assets/buttons/JuniorHuntBT_Selected.png');
+		}, 400);
+		console.log('Junior Hunt: 6 fun locations to explore!');
+	  } else if (level === 'Master Hunt') {
+		btnEasy.attribute('src', 'assets/buttons/JuniorHuntBT_Normal.png');
+		btnHard.attribute('src', 'assets/buttons/MasterHuntBT_Pressed.png');
+		setTimeout(() => {
+		  btnHard.attribute('src', 'assets/buttons/MasterHuntBT_Selected.png');
+		}, 400);
+		console.log('Master Hunt: 12 adventurous stops ahead!');
+	  }
+  } else {
+	   initInteraction()  
   }
 }
 
 function startGame() {
-	
-  // Animation
-  btnStart.attribute('src', 'assets/buttons/StartBT_Pressed.png');
-  setTimeout(() => {
-    btnStart.attribute('src', 'assets/buttons/StartBT_Normal.png');
-  }, 400);
-  	 	
-  if (!startEnabled) {
-	StartBT2_SFX.setVolume(0.8);
-    StartBT2_SFX.play();  
+  if (StartBarrier == false) {
+	  // Animation
+	  btnStart.attribute('src', 'assets/buttons/StartBT_Pressed.png');
+	  setTimeout(() => {
+		btnStart.attribute('src', 'assets/buttons/StartBT_Normal.png');
+	  }, 400);
+			
+	  if (!startEnabled) {
+		StartBT2_SFX.setVolume(0.8);
+		StartBT2_SFX.play();  
+		  
+		console.log("Please select a difficulty before starting!");
+		return;
+	  }
 	  
-    console.log("Please select a difficulty before starting!");
-    return;
-  }
-  
-  StartBT1_SFX.setVolume(0.8);
-  StartBT1_SFX.play();
+	  StartBT1_SFX.setVolume(0.8);
+	  StartBT1_SFX.play();
 
-  console.log('Starting game...');
-  setTimeout(() => {
-    window.location.href = 'mainPage/game.html'; // Game Destination
-  }, 1500);
+	  console.log('Starting game...');
+	  setTimeout(() => {
+		window.location.href = 'mainPage/game.html'; // Game Destination
+	  }, 1500);
+  } else {
+	   initInteraction()
+  }
 }
 
 function windowResized() {

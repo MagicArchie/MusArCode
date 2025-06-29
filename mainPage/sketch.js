@@ -35,6 +35,9 @@ let mainFont;
 let fontEn;
 let fontGr;
 
+let StartBarrier = true;
+let fullscreenActivated = false;
+
 function preload() {
   fontEn = loadFont('../assets/fonts/EnglishFont.ttf');
   fontGr = loadFont('../assets/fonts/GreekFont.otf');	
@@ -51,8 +54,11 @@ function preload() {
   MenuClose_SFX = loadSound('../assets/sounds/MenuClose_SFX.mp3');
 }
 
+let canvas;
+
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  canvas = createCanvas(windowWidth, windowHeight);  //Store canvas
+  canvas.mousePressed(initInteraction);              //Attach fullscreen logic to canvas
   
     // === Language & font selection ===
   if (selectedLanguage === 'gr') {
@@ -203,6 +209,28 @@ function setup() {
 	  tImg.style('position', 'absolute');
 	  tImg.style('z-index', '5');
 	  revealImages.push(tImg);
+	  
+	  tImg.mousePressed(() => {
+		  initInteraction();  // Release StartBarrier and go fullscreen if needed
+
+		  if (!clickReady || !LocationTriggerTester) return;
+
+		  clickReady = false;
+
+		  const maxAuto = difficulty === 'Junior Hunt' ? 6 : 12;
+		  if (autoRevealCount < maxAuto) {
+			autoRevealCount++;
+			localStorage.setItem('LocationsComplete', autoRevealCount);
+			revealCurrentProgress();
+		  } else {
+			console.log("All locations revealed.");
+		  }
+
+		  setTimeout(() => {
+			clickReady = true;
+		  }, 200);
+	  });
+
   }
 
   for (let i = 0; i < maxReveals; i++) {
@@ -316,6 +344,19 @@ function draw() {
   labelH = (finalLocationLabel.height / finalLocationLabel.width) * labelW;
   labelY = height * 0.95 - labelH / 2;
   image(finalLocationLabel, 0, labelY, labelW, labelH);
+}
+
+function initInteraction() {
+  if (!fullscreenActivated) {
+    fullscreen(true);
+    fullscreenActivated = true;
+    console.log("Fullscreen triggered by canvas");
+  }
+
+  if (StartBarrier) {
+    StartBarrier = false;
+    console.log("StartBarrier released");
+  }
 }
 
 function windowResized() {
@@ -480,17 +521,21 @@ function isMouseOver(button) {
 
 
 function menuButtonPressed() {
-  console.log('Menu button pressed!');
-  
-  Menu_SFX.setVolume(0.8);
-  Menu_SFX.play();  
-  
-  menuButton.hide();
-  menuBar.show();
-  
-  scanButton.show();
-  languageButton.show();
-  exitButton.show();
+  if (StartBarrier == false) {
+	  console.log('Menu button pressed!');
+	  
+	  Menu_SFX.setVolume(0.8);
+	  Menu_SFX.play();  
+	  
+	  menuButton.hide();
+	  menuBar.show();
+	  
+	  scanButton.show();
+	  languageButton.show();
+	  exitButton.show();
+  } else {
+	  initInteraction();
+  }
 }
 
 function hideMenuBar() {

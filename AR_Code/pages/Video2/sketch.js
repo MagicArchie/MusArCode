@@ -15,6 +15,7 @@ let fontGr;
 let selectedLanguage = localStorage.getItem('selectedLanguage') || 'en'; // Default to English
 let selectedLanguageOnOf = localStorage.getItem('selectedLanguageOnOf') || 'on'; //Default to ON
 
+let StartBarrier = true;
 
 function preload() {
   fontEn = loadFont('../../../assets/fonts/EnglishFont.ttf');
@@ -86,6 +87,7 @@ function draw() {
   
   //Show elements again if landscape
   video.show();
+  video.style('pointer-events', 'none'); // Make video non-clickable initially
   ContinueBT.show();
   ReturnBT.show();
   
@@ -175,4 +177,20 @@ function RetuenPressed() {
   setTimeout(() => {
     window.location.href = "../../../mainPage/game.html";
   }, 600);
+}
+
+let fullscreenActivated = false;
+
+function mousePressed() {
+  if (StartBarrier) {
+    StartBarrier = false;
+    
+	// Enable video interaction now
+    video.style('pointer-events', 'auto');
+  }
+  if (!fullscreenActivated && mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
+    let fs = fullscreen();
+    fullscreen(!fs);
+    fullscreenActivated = true; // Mark as activated
+  }
 }

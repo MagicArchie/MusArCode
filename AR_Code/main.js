@@ -10,10 +10,10 @@ document.addEventListener('DOMContentLoaded', () => {
 	document.body.classList.remove('gr');
   }
   
-  const BTSound = new Audio('../../../assets/sounds/BT_SFX3.mp3');
+  const BTSound = new Audio('../assets/sounds/BT_SFX3.mp3');
   BTSound.volume = 0.8;
   
-  const stopSound = new Audio('../../../assets/sounds/BT_SFX3.mp3'); // same file, different object
+  const stopSound = new Audio('../assets/sounds/BT_SFX3.mp3'); // same file, different object
   stopSound.volume = 0.8;
 
   //Update the heading and button labels based on the selected language

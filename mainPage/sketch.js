@@ -328,6 +328,14 @@ function draw() {
         labelsRevealed = true;
         menuButton.show();
     }
+	
+	if (fullscreenActivated && labelsRevealed && refreshSystem) {
+		setTimeout(() => {
+			resizeCanvas(windowWidth, windowHeight);
+			windowResized();
+		}, 100);
+    refreshSystem = false;
+    }
   }
 
   imageMode(CORNER); //Important reset
@@ -351,6 +359,12 @@ function initInteraction() {
     fullscreen(true);
     fullscreenActivated = true;
     console.log("Fullscreen triggered by canvas");
+
+    // Wait for fullscreen to complete and resize layout
+    setTimeout(() => {
+      resizeCanvas(windowWidth, windowHeight);
+      windowResized();  // recalculate positions & sizes
+    }, 300); // 300ms is a safe delay for most devices
   }
 
   if (StartBarrier) {
@@ -521,18 +535,21 @@ function isMouseOver(button) {
 
 
 function menuButtonPressed() {
-  if (StartBarrier == false) {
+  if (StartBarrier == false && fullscreenActivated) {
 	  console.log('Menu button pressed!');
 	  
 	  Menu_SFX.setVolume(0.8);
 	  Menu_SFX.play();  
 	  
-	  menuButton.hide();
-	  menuBar.show();
-	  
-	  scanButton.show();
-	  languageButton.show();
-	  exitButton.show();
+	  setTimeout(() => {
+		menuButton.hide();
+		menuBar.show();
+
+		scanButton.show();
+		languageButton.show();
+		exitButton.show();
+	  }, 100);
+
   } else {
 	  initInteraction();
   }

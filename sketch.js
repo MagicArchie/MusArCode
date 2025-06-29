@@ -52,6 +52,8 @@ function setup() {
   btnStart.size(startW, startH);
   btnStart.position(width / 2 - startW / 2, height / 1.95 + diffH);
   btnStart.mousePressed(startGame);
+  
+  layoutButtons();
 }
 
 function draw() {
@@ -84,13 +86,34 @@ function initInteraction() {
   if (!fullscreenActivated) {
     fullscreen(true);
     fullscreenActivated = true;
-    console.log("Fullscreen triggered by canvas");
+
+    // Wait for the fullscreen transition to finish before resizing
+    setTimeout(() => {
+      resizeCanvas(windowWidth, windowHeight);
+      layoutButtons(); // use this instead of duplicate logic
+    }, 300); // 300ms is usually enough
   }
 
   if (StartBarrier) {
     StartBarrier = false;
-    console.log("StartBarrier released");
   }
+}
+
+function layoutButtons() {
+  const diffW = width * 0.39;
+  const diffH = height * 0.11;
+  const startW = width * 0.59;
+  const startH = height * 0.11;
+  const gap = width * 0.05;
+
+  btnEasy.size(diffW, diffH);
+  btnEasy.position(width / 2 - diffW - gap / 2, height / 2.15);
+
+  btnHard.size(diffW, diffH);
+  btnHard.position(width / 2 + gap / 2, height / 2.15);
+
+  btnStart.size(startW, startH);
+  btnStart.position(width / 2 - startW / 2, height / 1.95 + diffH);
 }
 
 function setDifficulty(level) {
@@ -171,4 +194,6 @@ function windowResized() {
 
   btnStart.size(startW, startH);
   btnStart.position(width / 2 - startW / 2, height / 2 + diffH + 80);
+  
+  layoutButtons();
 }

@@ -15,6 +15,7 @@ let fontGr;
 let selectedLanguage = localStorage.getItem('selectedLanguage') || 'en'; // Default to English
 let selectedLanguageOnOf = localStorage.getItem('selectedLanguageOnOf') || 'on'; //Default to ON
 
+let StartBarrier = true;
 
 function preload() {
   fontEn = loadFont('../../../assets/fonts/EnglishFont.ttf');
@@ -86,6 +87,7 @@ function draw() {
   
   //Show elements again if landscape
   video.show();
+  video.style('pointer-events', 'none'); // Make video non-clickable initially
   ContinueBT.show();
   ReturnBT.show();
   
@@ -149,30 +151,50 @@ function styleUI() {
 }
 
 function ContinuePressed() {
-  BT_SFX.setVolume(0.8);
-  BT_SFX.play();  
-	
-  ContinueBT.attribute('src', '../../../assets/videoPage/VideoButton_Continue Pressed.png');
-  setTimeout(() => {
-    ContinueBT.attribute('src', '../../../assets/videoPage/VideoButton_Continue.png');
-  }, 400);
+  if (StartBarrier == false) {
+	  BT_SFX.setVolume(0.8);
+	  BT_SFX.play();  
+		
+	  ContinueBT.attribute('src', '../../../assets/videoPage/VideoButton_Continue Pressed.png');
+	  setTimeout(() => {
+		ContinueBT.attribute('src', '../../../assets/videoPage/VideoButton_Continue.png');
+	  }, 400);
 
-  setTimeout(() => {
-    localStorage.setItem("lastPage", "Video1");
-    window.location.href = "../QuizPage/index.html";
-  }, 600);
+	  setTimeout(() => {
+		localStorage.setItem("lastPage", "Video1");
+		window.location.href = "../QuizPage/index.html";
+	  }, 600);
+  }
 }
 
 function RetuenPressed() {
-  BT_SFX.setVolume(0.8);
-  BT_SFX.play();  
-  
-  ReturnBT.attribute('src', '../../../assets/videoPage/VideoButton_Return Pressed.png');
-  setTimeout(() => {
-    ReturnBT.attribute('src', '../../../assets/videoPage/VideoButton_Return.png');
-  }, 400);
+  if (StartBarrier == false) {
+	  BT_SFX.setVolume(0.8);
+	  BT_SFX.play();  
+	  
+	  ReturnBT.attribute('src', '../../../assets/videoPage/VideoButton_Return Pressed.png');
+	  setTimeout(() => {
+		ReturnBT.attribute('src', '../../../assets/videoPage/VideoButton_Return.png');
+	  }, 400);
 
-  setTimeout(() => {
-    window.location.href = "../../../mainPage/game.html";
-  }, 600);
+	  setTimeout(() => {
+		window.location.href = "../../../mainPage/game.html";
+	  }, 600);
+  }
+}
+
+let fullscreenActivated = false;
+
+function mousePressed() {
+  if (StartBarrier) {
+    StartBarrier = false;
+	
+	// Enable video interaction now
+    video.style('pointer-events', 'auto');
+  }
+  if (!fullscreenActivated && mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
+    let fs = fullscreen();
+    fullscreen(!fs);
+    fullscreenActivated = true; // Mark as activated
+  }
 }

@@ -29,6 +29,8 @@ let letter = [];
 
 const lastPage = localStorage.getItem("lastPage");
 
+let StartBarrier = true;
+
 function preload() {
   fontEn = loadFont('../../../assets/fonts/EnglishFont.ttf');
   fontGr = loadFont('../../../assets/fonts/GreekFont.otf');
@@ -63,9 +65,9 @@ function setup() {
 
   // === Return Button ===
   ReturnBT = createImg('../../../assets/videoPage/VideoButton_Return.png', 'Return Button');
-  ReturnBT.size(VideoBT_WH, VideoBT_WH);
-  ReturnBT.position(width * 0.02, height - VideoBT_WH - height * 0.05);
+  positionReturnButton(); // ✅ Use function
   ReturnBT.mousePressed(RetuenPressed);
+
 }
 
 function draw() {
@@ -106,8 +108,6 @@ if (finalRevealText && typeof finalRevealText === 'object') {
   return;
 }
 
-
-
   // Draw question
   noStroke();
   fill(0);
@@ -140,12 +140,18 @@ if (finalRevealText && typeof finalRevealText === 'object') {
   }
 }
 
-
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   landscapeW = max(windowWidth, windowHeight);
   landscapeH = min(windowWidth, windowHeight);
   styleUI();
+  positionReturnButton(); // ✅ Re-apply button position
+}
+
+function positionReturnButton() {
+  const VideoBT_WH = width * 0.1;
+  ReturnBT.size(VideoBT_WH, VideoBT_WH);
+  ReturnBT.position(width * 0.02, height - VideoBT_WH - height * 0.05);
 }
 
 function setupContentBasedOnPreviousPage() {
@@ -305,49 +311,66 @@ function styleUI() {
 }
 
 function onAnswerSelected(index) {
-  clickedIndex = index;
-  highlightTimer = millis();
+  if (StartBarrier == false) {
+	  clickedIndex = index;
+	  highlightTimer = millis();
 
-  if (index === correctAnswerIndex) {
-	Correct_SFX.setVolume(1);
-    Correct_SFX.play();    
+	  if (index === correctAnswerIndex) {
+		Correct_SFX.setVolume(1);
+		Correct_SFX.play();    
+		  
+		console.log("Correct answer!");
+
+		// Set LocationsComplete based on current video number
+		const lastPage = localStorage.getItem("lastPage");
+		const match = lastPage && lastPage.match(/Video(\d+)/); // Extract number from "VideoX"
+		if (match && match[1]) {
+		  localStorage.setItem("LocationsComplete", match[1]); // Save number as string
+		}
+
+		setTimeout(() => {
+		  LetterReveal();
+		}, 500);
+
+		setTimeout(() => {
+		  window.location.href = "../../../mainPage/game.html";
+		}, 4000);
+	  } else {
+		Wrong_SFX.setVolume(1);
+		Wrong_SFX.play();  
 	  
-    console.log("Correct answer!");
-
-    // Set LocationsComplete based on current video number
-    const lastPage = localStorage.getItem("lastPage");
-    const match = lastPage && lastPage.match(/Video(\d+)/); // Extract number from "VideoX"
-    if (match && match[1]) {
-      localStorage.setItem("LocationsComplete", match[1]); // Save number as string
-    }
-
-    setTimeout(() => {
-      LetterReveal();
-    }, 500);
-
-    setTimeout(() => {
-      window.location.href = "../../../mainPage/game.html";
-    }, 4000);
-  } else {
-	Wrong_SFX.setVolume(1);
-    Wrong_SFX.play();  
-  
-    console.log("Wrong answer.");
+		console.log("Wrong answer.");
+	  }
   }
 }
 
 function RetuenPressed() {
-  RtBT_SFX.setVolume(0.8);
-  RtBT_SFX.play();  
-  
-  ReturnBT.attribute('src', '../../../assets/videoPage/VideoButton_Return Pressed.png');
-  setTimeout(() => {
-    ReturnBT.attribute('src', '../../../assets/videoPage/VideoButton_Return.png');
-  }, 400);
+  if (StartBarrier == false) {
+	  RtBT_SFX.setVolume(0.8);
+	  RtBT_SFX.play();  
+	  
+	  ReturnBT.attribute('src', '../../../assets/videoPage/VideoButton_Return Pressed.png');
+	  setTimeout(() => {
+		ReturnBT.attribute('src', '../../../assets/videoPage/VideoButton_Return.png');
+	  }, 400);
 
-  setTimeout(() => {
-    window.location.href = "../Video1/index.html";
-  }, 600);
+	  setTimeout(() => {
+		window.location.href = "../Video1/index.html";
+	  }, 600);
+  }
+}
+
+let fullscreenActivated = false;
+
+function mousePressed() {
+  if (StartBarrier) {
+    StartBarrier = false;
+  }
+  if (!fullscreenActivated && mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
+    let fs = fullscreen();
+    fullscreen(!fs);
+    fullscreenActivated = true; // Mark as activated
+  }
 }
 
 function LetterReveal() {

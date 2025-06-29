@@ -172,7 +172,7 @@ function setup() {
   
   // === Lunguage Menu BT3 (top center) ===
   let lungMenuTop = height * 0.12;
-  let spacingBetweenButtons = LungBT_H * 1.2;
+  let spacingBetweenButtons = LungBT_H * 1.05;
 
   if (selectedLanguageOnOf === 'on') {
 	Subtitles_OnOf = true;
@@ -182,7 +182,7 @@ function setup() {
 	LungMenu_BT3 = createImg('../assets/mainPage/buttons/OffBT.png', 'OFF Button');
   }
   LungMenu_BT3.size(LungBT_W, LungBT_H);
-  LungMenu_BT3.position(width / 2 - LungBT_W / 2, lungMenuTop + spacingBetweenButtons * 2);
+  LungMenu_BT3.position(width / 2 - LungBT_W / 2, lungMenuTop + spacingBetweenButtons * 4.5);
   LungMenu_BT3.mousePressed(LunguageOnOf);
   LungMenu_BT3.hide();
   LungMenu_BT3.style('z-index', '8');
@@ -422,7 +422,7 @@ function windowResized() {
   let LungBT_H = width * 0.15;
   
   lungMenuTop = height * 0.12;
-  spacingBetweenButtons = LungBT_H * 1.2;
+  spacingBetweenButtons = LungBT_H * 1.05;
 
   LungMenu_Body.size(LungBody_W, LungBody_H);
   LungMenu_Body.position(width / 2 - LungBody_W / 2, height * 0.12);
@@ -434,7 +434,7 @@ function windowResized() {
   LungMenu_BT2.position(width / 2 - LungBT_W / 2, height * 0.30);
 
   LungMenu_BT3.size(LungBT_W, LungBT_H);
-  LungMenu_BT3.position(width / 2 - LungBT_W / 2, lungMenuTop + spacingBetweenButtons * 2);
+  LungMenu_BT3.position(width / 2 - LungBT_W / 2, lungMenuTop + spacingBetweenButtons * 4.5);
 
   // === Reposition all revealed images ===
   for (let i = 0; i < revealImages.length; i++) {

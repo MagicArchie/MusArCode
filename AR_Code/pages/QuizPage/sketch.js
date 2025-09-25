@@ -185,9 +185,9 @@ function setupContentBasedOnPreviousPage() {
       ? "Από τι υλικό έχει επενδυθεί το κτίριο του Μουσείου Ασιατικής Τέχνης;"
       : "What material was used to clad the building that houses the Museum of Asian Art?";
     answers = selectedLanguage === "gr"
-      ? ["Μάρμαρο Καράρα", "Ασβεστόλιθος Μάλτας", "Γρανίτης"]
+      ? ["Μάρμαρο Καράρα", "Πωρόλιθο Μάλτας", "Γρανίτης"]
       : ["Carrara marble", "Maltese limestone", "Granite"];
-    correctAnswerIndex = 0;
+    correctAnswerIndex = 1;
   }
   else if (lastPage === "Video4") {
     questionText = selectedLanguage === "gr"
@@ -230,9 +230,9 @@ function setupContentBasedOnPreviousPage() {
       ? "Ποιο είναι το έμβλημα πάνω από την Πύλη του Νέου Φρουρίου στην Κέρκυρα;"
       : "What is the emblem above the Gate of the New Fortress in Corfu?";
     answers = selectedLanguage === "gr"
-      ? ["Ο φτερωτός λέων του Αγίου Μάρκου", "Ο δικέφαλος αετός της Βυζαντινής Αυτοκρατορίας", "Το σύμβολο της Βρετανικής Αυτοκρατορίας"]
-      : ["The winged lion of Saint Mark", "The double-headed eagle of the Byzantine Empire", "The symbol of the British Empire"];
-    correctAnswerIndex = 0;
+      ? ["Το σύμβολο της Βρετανικής Αυτοκρατορίας", "Ο δικέφαλος αετός της Βυζαντινής Αυτοκρατορίας", "Ο φτερωτός λέων του Αγίου Μάρκου"]
+      : ["The symbol of the British Empire", "The double-headed eagle of the Byzantine Empire", "The winged lion of Saint Mark"];
+    correctAnswerIndex = 2;
   }
   else if (lastPage === "Video9") {
     questionText = selectedLanguage === "gr"
@@ -266,9 +266,9 @@ function setupContentBasedOnPreviousPage() {
       ? "Ποια είναι η ιστορική σημασία του Δημαρχείου;"
       : "What is the historical significance of the Town Hall?";
     answers = selectedLanguage === "gr"
-      ? ["Ήταν εμπορικό κέντρο που χτίστηκε το 1800.", "Χτίστηκε μεταξύ 1663 και 1693 και έγινε θέατρο το 1720. Το 1903 έγινε Δημαρχείο.", "Ήταν μοναστήρι που χτίστηκε το 1500."]
-      : ["It was a commercial centre built in 1800.", "It was built between 1663 and 1693 and became a theatre in 1720. In 1903, it became the Town Hall.", "It was a monastery built in 1500."];
-    correctAnswerIndex = 1;
+      ? ["Ήταν εμπορικό κέντρο που χτίστηκε το 1800.", "Ήταν μοναστήρι που χτίστηκε το 1500.", "Χτίστηκε μεταξύ 1663 και 1693 και έγινε θέατρο το 1720. Το 1903 έγινε Δημαρχείο."]
+      : ["It was a commercial centre built in 1800.", "It was a monastery built in 1500.", "It was built between 1663 and 1693 and became a theatre in 1720. In 1903, it became the Town Hall."];
+    correctAnswerIndex = 2;
   }
   else {
     questionText = selectedLanguage === 'gr' ? "Σφάλμα φόρτωσης ερώτησης." : "Error loading question.";
@@ -380,41 +380,41 @@ function LetterReveal() {
   ReturnBT.hide();
   questionText = "";
 
-  const lettersToReveal = ['Ν', 'Η', 'Σ', 'Ο', 'Σ', 'Φ', 'Α', 'Ι', 'Α', 'Κ', 'Ω', 'Ν'];
+  // direct mapping for Junior Hunt
+  const juniorPairs = ["ΝΗ", "ΣΟ", "ΣΦ", "ΑΙ", "ΑΚ", "ΩΝ"];
 
-  // Find current video index (0-based)
+  // All 12 letters still used for Master Hunt
+  const lettersToReveal = ['Ν','Η','Σ','Ο','Σ','Φ','Α','Ι','Α','Κ','Ω','Ν'];
+
+  // Find current video number
   const lastPage = localStorage.getItem("lastPage");
-  let i = 0;
+  let videoNum = 1;
   const m = lastPage && lastPage.match(/Video(\d+)/);
-  if (m && m[1]) {
-    i = Math.max(0, Math.min(lettersToReveal.length - 1, parseInt(m[1], 10) - 1));
-  }
+  if (m && m[1]) videoNum = Math.max(1, Math.min(12, parseInt(m[1], 10)));
 
-  // === Reveal based on difficulty ===
-  let revealedLetters;
+  let revealedLetters = "";
+
   if (selectedDifficulty === 'Junior Hunt') {
-    // reveal two letters: current + next (wrap at end)
-    const j = (i + 1) % lettersToReveal.length;
-    revealedLetters = `${lettersToReveal[i]} ${lettersToReveal[j]}`;
-  } else if (selectedDifficulty === 'Master Hunt') {
-    // reveal only one letter
-    revealedLetters = lettersToReveal[i];
+    // Map each video directly to one pair
+    const idx = videoNum - 1; // 0-based
+    if (idx < juniorPairs.length) {
+      revealedLetters = juniorPairs[idx];
+    } else {
+      revealedLetters = juniorPairs[juniorPairs.length - 1]; // fallback
+    }
   } else {
-    // fallback
-    revealedLetters = lettersToReveal[i];
+    // Master Hunt → one letter only
+    revealedLetters = lettersToReveal[videoNum - 1];
   }
 
-  // === Messages (singular/plural & language) ===
+  // Messages
+  const isPlural = (selectedDifficulty === 'Junior Hunt');
   let messagePart1, messagePart2;
   if (selectedLanguage === "gr") {
-    messagePart1 = (selectedDifficulty === 'Junior Hunt')
-      ? "Σωστά! Κερδίσατε τα γράμματα "
-      : "Σωστά! Κερδίσατε το γράμμα ";
+    messagePart1 = isPlural ? "Σωστά! Κερδίσατε τα γράμματα " : "Σωστά! Κερδίσατε το γράμμα ";
     messagePart2 = ". Μπράβο σας!";
   } else {
-    messagePart1 = (selectedDifficulty === 'Junior Hunt')
-      ? "Correct! You won the letters "
-      : "Correct! You won the letter ";
+    messagePart1 = isPlural ? "Correct! You won the letters " : "Correct! You won the letter ";
     messagePart2 = ". Well done!";
   }
 

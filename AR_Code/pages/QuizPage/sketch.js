@@ -20,6 +20,7 @@ let highlightTimer = 0;
 
 let selectedLanguage = localStorage.getItem('selectedLanguage') || 'en'; // Default to English
 let selectedLanguageOnOf = localStorage.getItem('selectedLanguageOnOf') || 'on'; //Default to ON
+let selectedDifficulty = localStorage.getItem('selectedDifficulty') || 'Junior Hunt'; //Default to Junior Hunt
 
 const lettersToReveal = ['Ν', 'Η', 'Σ', 'Ο', 'Σ', 'Φ', 'Α', 'Ι', 'Α', 'Κ', 'Ω', 'Ν'];
 
@@ -65,7 +66,7 @@ function setup() {
 
   // === Return Button ===
   ReturnBT = createImg('../../../assets/videoPage/VideoButton_Return.png', 'Return Button');
-  positionReturnButton(); // ✅ Use function
+  positionReturnButton(); // Use function
   ReturnBT.mousePressed(RetuenPressed);
 
 }
@@ -145,7 +146,7 @@ function windowResized() {
   landscapeW = max(windowWidth, windowHeight);
   landscapeH = min(windowWidth, windowHeight);
   styleUI();
-  positionReturnButton(); // ✅ Re-apply button position
+  positionReturnButton(); // Re-apply button position
 }
 
 function positionReturnButton() {
@@ -374,57 +375,52 @@ function mousePressed() {
 }
 
 function LetterReveal() {
+  // hide UI
   answerButtons.forEach(btn => btn.hide());
   ReturnBT.hide();
   questionText = "";
 
-  let message = "";
   const lettersToReveal = ['Ν', 'Η', 'Σ', 'Ο', 'Σ', 'Φ', 'Α', 'Ι', 'Α', 'Κ', 'Ω', 'Ν'];
-  
-	if (lastPage == "Video1") {
-		letter = lettersToReveal[0];
-	} else if (lastPage == "Video2") {
-		letter = lettersToReveal[1];
-	} else if (lastPage == "Video3") {
-		letter = lettersToReveal[2];
-	} else if (lastPage == "Video4") {
-		letter = lettersToReveal[3];
-	} else if (lastPage == "Video5") {
-		letter = lettersToReveal[4];
-	} else if (lastPage == "Video6") {
-		letter = lettersToReveal[5];
-	} else if (lastPage == "Video7") {
-		letter = lettersToReveal[6];
-	} else if (lastPage == "Video8") {
-		letter = lettersToReveal[7];
-	} else if (lastPage == "Video9") {
-		letter = lettersToReveal[8];
-	} else if (lastPage == "Video10") {
-		letter = lettersToReveal[9];
-	} else if (lastPage == "Video11") {
-	    letter = lettersToReveal[10];
-	} else if (lastPage == "Video12") {
-		letter = lettersToReveal[11];
-	}
 
-	let messagePart1 = "";
-	let messageLetter = "";
-	let messagePart2 = "";
+  // Find current video index (0-based)
+  const lastPage = localStorage.getItem("lastPage");
+  let i = 0;
+  const m = lastPage && lastPage.match(/Video(\d+)/);
+  if (m && m[1]) {
+    i = Math.max(0, Math.min(lettersToReveal.length - 1, parseInt(m[1], 10) - 1));
+  }
 
-	if (selectedLanguage === "gr") {
-	  messagePart1 = "Σωστά! Κερδίσατε το γράμμα ";
-	  messageLetter = letter;
-	  messagePart2 = ". Μπράβο σας!";
-	} else {
-	  messagePart1 = "Correct! You won the letter ";
-	  messageLetter = letter;
-	  messagePart2 = ". Well done!";
-	}
+  // === Reveal based on difficulty ===
+  let revealedLetters;
+  if (selectedDifficulty === 'Junior Hunt') {
+    // reveal two letters: current + next (wrap at end)
+    const j = (i + 1) % lettersToReveal.length;
+    revealedLetters = `${lettersToReveal[i]} ${lettersToReveal[j]}`;
+  } else if (selectedDifficulty === 'Master Hunt') {
+    // reveal only one letter
+    revealedLetters = lettersToReveal[i];
+  } else {
+    // fallback
+    revealedLetters = lettersToReveal[i];
+  }
 
-	finalRevealText = {
-	  part1: messagePart1,
-	  letter: messageLetter,
-	  part2: messagePart2
-	};
+  // === Messages (singular/plural & language) ===
+  let messagePart1, messagePart2;
+  if (selectedLanguage === "gr") {
+    messagePart1 = (selectedDifficulty === 'Junior Hunt')
+      ? "Σωστά! Κερδίσατε τα γράμματα "
+      : "Σωστά! Κερδίσατε το γράμμα ";
+    messagePart2 = ". Μπράβο σας!";
+  } else {
+    messagePart1 = (selectedDifficulty === 'Junior Hunt')
+      ? "Correct! You won the letters "
+      : "Correct! You won the letter ";
+    messagePart2 = ". Well done!";
+  }
 
+  finalRevealText = {
+    part1: messagePart1,
+    letter: revealedLetters,
+    part2: messagePart2
+  };
 }

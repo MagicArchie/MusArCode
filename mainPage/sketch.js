@@ -440,7 +440,9 @@ function windowResized() {
   for (let i = 0; i < revealImages.length; i++) {
     revealImages[i].size(mapW, mapH);
     revealImages[i].position(0, mapY);
-
+  }
+  
+  for (let i = 0; i < labelImages.length; i++) {
     labelImages[i].size(labelW, labelH);
     labelImages[i].position(0, labelY);
   }

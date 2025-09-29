@@ -20,14 +20,17 @@ let scanButton, languageButton, exitButton;
 let LungSelected = 2; //English Selected
 let Subtitles_OnOf = true;
 let LungMenuActive = false;
+let OneUse2 = 'false';
 
 let rotateWarningImg;
 let labelsRevealed = false;
 
 let refreshSystem = false;
 
+let IntroPlay = localStorage.getItem('IntroPlay') || 'on'; // Default to on
 let selectedLanguage = localStorage.getItem('selectedLanguage') || 'en'; // Default to English
 let selectedLanguageOnOf = localStorage.getItem('selectedLanguageOnOf') || 'on'; //Default to ON
+let OneUse = localStorage.getItem('OneUse') || 'false'; //Default to false
 
 let spotsToReveal = 12; // default to 12
 
@@ -37,6 +40,19 @@ let fontGr;
 
 let StartBarrier = true;
 let fullscreenActivated = false;
+
+let narratorImg;                  // load in preload or pass to startNarratorImage()
+let narratorActive = false;
+let narratorX = 0, narratorY = 0, narratorW = 0, narratorH = 0;
+let narratorSpeed = 120;           // px/sec
+let narratorState = 'idle';       // 'movingRight' | 'paused' | 'movingLeft' | 'idle'
+let narratorPauseUntil = 0;
+let narratorPauseMs = 15000;      // 15 seconds pause
+let narratorMargin = 12;
+let narratorScale = 0.45;         // width = canvasWidth * narratorScale
+let narratorRightTargetX = 0;
+let narratorLeftTargetX  = 0;
+
 
 function preload() {
   fontEn = loadFont('../assets/fonts/EnglishFont.ttf');
@@ -52,6 +68,18 @@ function preload() {
   LungMenu_SFX = loadSound('../assets/sounds/BT_SFX3.mp3');
   Menu_SFX = loadSound('../assets/sounds/Menu_SFX.mp3');
   MenuClose_SFX = loadSound('../assets/sounds/MenuClose_SFX.mp3');
+  
+  narratorImg = loadImage('../assets/narrator/NPC_Image.png');
+  
+  if (IntroPlay == 'on'){
+	  if (selectedLanguage == 'gr'){
+		NarratorIntro = loadSound('../assets/narrator/greek/NrtP1.mp3');
+		NarratorHint1 = loadSound('../assets/narrator/greek/NrtP2.mp3');
+	  } else {
+		NarratorIntro = loadSound('../assets/narrator/english/NrtP1.mp3');
+		NarratorHint1 = loadSound('../assets/narrator/english/NrtP2.mp3');
+	  }
+  }
 }
 
 let canvas;
@@ -355,6 +383,8 @@ function draw() {
   labelH = (finalLocationLabel.height / finalLocationLabel.width) * labelW;
   labelY = height * 0.95 - labelH / 2;
   image(finalLocationLabel, 0, labelY, labelW, labelH);
+  
+  updateNarratorImage();
 }
 
 function initInteraction() {
@@ -362,6 +392,8 @@ function initInteraction() {
     fullscreen(true);
     fullscreenActivated = true;
     console.log("Fullscreen triggered by canvas");
+	
+	//startNarratorImage(narratorImg, 10000); // Tester
 
     // Wait for fullscreen to complete and resize layout
     setTimeout(() => {
@@ -370,9 +402,53 @@ function initInteraction() {
     }, 300); // 300ms is a safe delay for most devices
   }
 
-  if (StartBarrier) {
+  if (StartBarrier && IntroPlay == 'off') {
     StartBarrier = false;
     console.log("StartBarrier released");
+  }
+  
+  if (StartBarrier && OneUse == 'false') {
+    StartBarrier = false;
+    console.log("StartBarrier released");
+  }
+  
+  if (StartBarrier && difficulty == 'Master Hunt') {
+    StartBarrier = false;
+    console.log("StartBarrier released");
+  }
+  
+  // Activate Narrator
+  if (IntroPlay == 'on' && OneUse == 'true' && OneUse2 == 'false' && difficulty == 'Junior Hunt'){
+	localStorage.setItem('IntroPlay', 'off'); // one use
+	OneUse2 = true;
+	
+	setTimeout(() => {
+		startNarratorImage(narratorImg, 51500);
+	}, 1000); // delay
+	
+	setTimeout(() => {
+		NarratorIntro.setVolume(0.5);
+		NarratorIntro.play();
+	}, 2000); // delay
+	if (selectedLanguage == 'gr') {
+		setTimeout(() => {
+		NarratorHint1.setVolume(0.5);
+		NarratorHint1.play();
+	}, 38000); // delay
+	setTimeout(() => {
+		StartBarrier = false;
+		console.log("StartBarrier released");
+	}, 57000); // delay
+	} else {
+		setTimeout(() => {
+		NarratorHint1.setVolume(0.5);
+		NarratorHint1.play();
+	}, 36000); // delay 
+	setTimeout(() => {
+		StartBarrier = false;
+		console.log("StartBarrier released");
+	}, 52000); // delay
+	}
   }
 }
 
@@ -446,6 +522,21 @@ function windowResized() {
     labelImages[i].size(labelW, labelH);
     labelImages[i].position(0, labelY);
   }
+  
+  if (narratorImg) {
+	  narratorW = width * narratorScale;
+	  narratorH = (narratorImg.height / narratorImg.width) * narratorW;
+
+	  // keep the specified vertical position
+	  narratorY = height * 0.7;
+
+	  // recompute targets
+	  narratorRightTargetX = width * 0.25 - narratorW / 2;
+	  narratorLeftTargetX  = -narratorW - narratorMargin; // <<< go fully off-screen left
+
+	  narratorX = constrain(narratorX, -narratorW - narratorMargin, width + narratorMargin);
+  }
+
 }
 
 function mousePressed() {
@@ -648,6 +739,13 @@ function GreekSelected() {
 	// Store the selected language
 	localStorage.setItem('selectedLanguage', 'gr');
 	selectedLanguage = 'gr';
+	
+	if (OneUse == 'false' && difficulty == 'Junior Hunt') {
+		localStorage.setItem('OneUse', 'true');
+		setTimeout(() => {
+			location.reload();
+		}, 1200);
+	}
 }
 
 function EnglishSelected() {
@@ -665,6 +763,13 @@ function EnglishSelected() {
 	// Store the selected language
 	localStorage.setItem('selectedLanguage', 'en');
 	selectedLanguage = 'en';
+	
+	if (OneUse == 'false' && difficulty == 'Junior Hunt') {
+		localStorage.setItem('OneUse', 'true');
+		setTimeout(() => {
+			location.reload();
+		}, 1200);
+	}
 }
 
 function LunguageOnOf() {
@@ -705,4 +810,53 @@ function ExitBT_Pressed() {
 		localStorage.clear();
 		window.location.href = '../index.html';
 	}, 600);
+}
+
+function startNarratorImage(img = narratorImg, pauseMs = narratorPauseMs) {
+  if (narratorActive) return;
+  if (!img) return;
+  narratorImg = img;
+
+  narratorW = width * narratorScale;
+  narratorH = (img.height / img.width) * narratorW;
+
+  narratorX = -narratorW;
+  narratorY = height * 0.7;
+
+  narratorRightTargetX = width * 0.4 - narratorW / 2;
+  narratorLeftTargetX  = -narratorW - narratorMargin;
+
+  narratorPauseMs = pauseMs;
+  narratorState = 'movingRight';
+  narratorActive = true;
+}
+
+function updateNarratorImage() {
+  if (!narratorActive || !narratorImg) return;
+
+  // draw
+  image(narratorImg, narratorX, narratorY, narratorW, narratorH);
+
+  const dt = deltaTime / 1000; // seconds
+
+  if (narratorState === 'movingRight') {
+    narratorX += narratorSpeed * dt;
+    if (narratorX >= narratorRightTargetX) {
+      narratorX = narratorRightTargetX;
+      narratorState = 'paused';
+      narratorPauseUntil = millis() + narratorPauseMs;
+    }
+  } else if (narratorState === 'paused') {
+    if (millis() >= narratorPauseUntil) {
+      narratorState = 'movingLeft';
+    }
+  } else if (narratorState === 'movingLeft') {
+	  narratorX -= narratorSpeed * dt;
+	  if (narratorX <= narratorLeftTargetX) {
+		narratorX = narratorLeftTargetX;
+		narratorState = 'idle';
+		narratorActive = false; // stop off-screen
+	  }
+  }
+
 }

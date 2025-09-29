@@ -31,6 +31,20 @@ let letter = [];
 const lastPage = localStorage.getItem("lastPage");
 
 let StartBarrier = true;
+let currentPairAudio = null; 
+
+let narratorImg;                  // load in preload or pass to startNarratorImage()
+let narratorActive = false;
+let narratorX = 0, narratorY = 0, narratorW = 0, narratorH = 0;
+let narratorSpeed = 120;           // px/sec
+let narratorState = 'idle';       // 'movingRight' | 'paused' | 'movingLeft' | 'idle'
+let narratorPauseUntil = 0;
+let narratorPauseMs = 15000;      // 15 seconds pause
+let narratorMargin = 12;
+let narratorScale = 0.2;         // width = canvasWidth * narratorScale
+let narratorRightTargetX = 0;
+let narratorLeftTargetX  = 0;
+
 
 function preload() {
   fontEn = loadFont('../../../assets/fonts/EnglishFont.ttf');
@@ -41,9 +55,40 @@ function preload() {
   Correct_SFX = loadSound('../../../assets/sounds/Correct_SFX.mp3');
   
   bgImage = loadImage('../../../assets/mainPage/MainPage_BG.jpg');
-
-  // correctSound = loadSound('../../../assets/sounds/correct.mp3');
-  // wrongSound = loadSound('../../../assets/sounds/wrong.mp3');
+  
+  if (selectedDifficulty == 'Junior Hunt') {
+	  if (selectedLanguage == 'gr') {
+		  if (lastPage == 'Video1') {
+			currentPairAudio = loadSound('../../../assets/narrator/greek/NrtP3.mp3');
+		  } else if (lastPage == 'Video2') {
+			currentPairAudio = loadSound('../../../assets/narrator/greek/NrtP4.mp3');
+		  } else if (lastPage == 'Video3') {
+			currentPairAudio = loadSound('../../../assets/narrator/greek/NrtP5.mp3');
+		  } else if (lastPage == 'Video4') {
+			currentPairAudio = loadSound('../../../assets/narrator/greek/NrtP6.mp3');
+		  } else if (lastPage == 'Video5') {
+			currentPairAudio = loadSound('../../../assets/narrator/greek/NrtP7.mp3');
+		  } else if (lastPage == 'Video12') {
+			currentPairAudio = loadSound('../../../assets/narrator/greek/NrtP8.mp3');
+		  }
+	  } else {
+		  if (lastPage == 'Video1') {
+			currentPairAudio = loadSound('../../../assets/narrator/english/NrtP3.mp3');
+		  } else if (lastPage == 'Video2') {
+			currentPairAudio = loadSound('../../../assets/narrator/english/NrtP4.mp3');
+		  } else if (lastPage == 'Video3') {
+			currentPairAudio = loadSound('../../../assets/narrator/english/NrtP5.mp3');
+		  } else if (lastPage == 'Video4') {
+			currentPairAudio = loadSound('../../../assets/narrator/english/NrtP6.mp3');
+		  } else if (lastPage == 'Video5') {
+			currentPairAudio = loadSound('../../../assets/narrator/english/NrtP7.mp3');
+		  } else if (lastPage == 'Video12') {
+			currentPairAudio = loadSound('../../../assets/narrator/english/NrtP8.mp3');
+		  }
+	  }
+  }
+  
+  narratorImg = loadImage('../../../assets/narrator/NPC_Image.png');
 }
 
 function setup() {
@@ -76,6 +121,8 @@ function draw() {
   textStyle(NORMAL);
   
   image(bgImage, 0, 0, landscapeW, landscapeH);
+  
+  updateNarratorImage();
 
 if (finalRevealText && typeof finalRevealText === 'object') {
   noStroke();
@@ -147,6 +194,20 @@ function windowResized() {
   landscapeH = min(windowWidth, windowHeight);
   styleUI();
   positionReturnButton(); // Re-apply button position
+  
+  if (narratorImg) {
+	  narratorW = width * narratorScale;
+	  narratorH = (narratorImg.height / narratorImg.width) * narratorW;
+
+	  // keep the specified vertical position
+	  narratorY = height * 0.5;
+
+	  // recompute targets
+	  narratorRightTargetX = width * 0.13 - narratorW / 2;
+	  narratorLeftTargetX  = -narratorW - narratorMargin; // <<< go fully off-screen left
+
+	  narratorX = constrain(narratorX, -narratorW - narratorMargin, width + narratorMargin);
+  }
 }
 
 function positionReturnButton() {
@@ -318,7 +379,69 @@ function onAnswerSelected(index) {
 
 	  if (index === correctAnswerIndex) {
 		Correct_SFX.setVolume(1);
-		Correct_SFX.play();    
+		Correct_SFX.play();   
+
+		// play the corresponding narrator pair audio on correct selection
+	    if (selectedDifficulty === 'Junior Hunt' && currentPairAudio) {
+		  // small delay so the “correct” sfx pops first; tweak as you like
+		  setTimeout(() => {
+		    if (currentPairAudio.isPlaying()) currentPairAudio.stop();
+			  if (selectedLanguage === 'en') {
+				  // ------- English delays -------
+				  switch (lastPage) {
+					case 'Video1':
+					  startNarratorImage(narratorImg, 30500);
+					  break;
+					case 'Video2':
+					  startNarratorImage(narratorImg, 38500);
+					  break;
+					case 'Video3':
+					  startNarratorImage(narratorImg, 31500);
+					  break;
+					case 'Video4':
+					  startNarratorImage(narratorImg, 29500);
+					  break;
+					case 'Video5':
+					  startNarratorImage(narratorImg, 22500);
+					  break;
+					case 'Video12':
+					  startNarratorImage(narratorImg, 71500);
+					  break;
+					default:
+					  startNarratorImage(narratorImg, 30500);
+				  }
+			  } else {
+				  // ------- Greek delays -------
+				  switch (lastPage) {
+					case 'Video1':
+					  startNarratorImage(narratorImg, 30500);
+					  break;
+					case 'Video2':
+					  startNarratorImage(narratorImg, 32500);
+					  break;
+					case 'Video3':
+					  startNarratorImage(narratorImg, 33500);
+					  break;
+					case 'Video4':
+					  startNarratorImage(narratorImg, 39500);
+					  break;
+					case 'Video5':
+					  startNarratorImage(narratorImg, 16500);
+					  break;
+					case 'Video12':
+					  startNarratorImage(narratorImg, 56500);
+					  break;
+					default:
+					  startNarratorImage(narratorImg, 30500);
+				  }
+		     }
+			  
+			  setTimeout(() => {
+				  currentPairAudio.setVolume(0.5);
+				  currentPairAudio.play();
+			  }, 2000);
+		  }, 2000);
+	    }
 		  
 		console.log("Correct answer!");
 
@@ -333,9 +456,62 @@ function onAnswerSelected(index) {
 		  LetterReveal();
 		}, 500);
 
-		setTimeout(() => {
-		  window.location.href = "../../../mainPage/game.html";
-		}, 4000);
+		  let redirectDelay = 28500;  // default
+		  
+		  if (selectedLanguage === 'en') {
+			  // ------- English delays -------
+			  switch (lastPage) {
+				case 'Video1':
+				  redirectDelay = 28500;
+				  break;
+				case 'Video2':
+				  redirectDelay = 36500;
+				  break;
+				case 'Video3':
+				  redirectDelay = 29500;
+				  break;
+				case 'Video4':
+				  redirectDelay = 27500;
+				  break;
+				case 'Video5':
+				  redirectDelay = 20500;
+				  break;
+				case 'Video12':
+				  redirectDelay = 69500;
+				  break;
+				default:
+				  redirectDelay = 28500;
+			  }
+			} else {
+			  // ------- Greek delays -------
+			  switch (lastPage) {
+				case 'Video1':
+				  redirectDelay = 28500;
+				  break;
+				case 'Video2':
+				  redirectDelay = 30500;
+				  break;
+				case 'Video3':
+				  redirectDelay = 31500;
+				  break;
+				case 'Video4':
+				  redirectDelay = 37500;
+				  break;
+				case 'Video5':
+				  redirectDelay = 14500;
+				  break;
+				case 'Video12':
+				  redirectDelay = 54500;
+				  break;
+				default:
+				  redirectDelay = 28500;
+			  }
+			}
+
+		  // redirect to game page after audio finishes
+		  setTimeout(() => {
+			window.location.href = "../../../mainPage/game.html";
+		  }, redirectDelay);
 	  } else {
 		Wrong_SFX.setVolume(1);
 		Wrong_SFX.play();  
@@ -347,7 +523,7 @@ function onAnswerSelected(index) {
 
 function RetuenPressed() {
   if (StartBarrier == false) {
-	  RtBT_SFX.setVolume(0.8);
+	  RtBT_SFX.setVolume(0.9);
 	  RtBT_SFX.play();  
 	  
 	  ReturnBT.attribute('src', '../../../assets/videoPage/VideoButton_Return Pressed.png');
@@ -402,6 +578,7 @@ function LetterReveal() {
     } else {
       revealedLetters = juniorPairs[juniorPairs.length - 1]; // fallback
     }
+	
   } else {
     // Master Hunt → one letter only
     revealedLetters = lettersToReveal[videoNum - 1];
@@ -423,4 +600,53 @@ function LetterReveal() {
     letter: revealedLetters,
     part2: messagePart2
   };
+}
+
+function startNarratorImage(img = narratorImg, pauseMs = narratorPauseMs) {
+  if (narratorActive) return;
+  if (!img) return;
+  narratorImg = img;
+
+  narratorW = width * narratorScale;
+  narratorH = (img.height / img.width) * narratorW;
+
+  narratorX = -narratorW;
+  narratorY = height * 0.5;
+
+  narratorRightTargetX = width * 0.13 - narratorW / 2;
+  narratorLeftTargetX  = -narratorW - narratorMargin;
+
+  narratorPauseMs = pauseMs;
+  narratorState = 'movingRight';
+  narratorActive = true;
+}
+
+function updateNarratorImage() {
+  if (!narratorActive || !narratorImg) return;
+
+  // draw
+  image(narratorImg, narratorX, narratorY, narratorW, narratorH);
+
+  const dt = deltaTime / 1000; // seconds
+
+  if (narratorState === 'movingRight') {
+    narratorX += narratorSpeed * dt;
+    if (narratorX >= narratorRightTargetX) {
+      narratorX = narratorRightTargetX;
+      narratorState = 'paused';
+      narratorPauseUntil = millis() + narratorPauseMs;
+    }
+  } else if (narratorState === 'paused') {
+    if (millis() >= narratorPauseUntil) {
+      narratorState = 'movingLeft';
+    }
+  } else if (narratorState === 'movingLeft') {
+	  narratorX -= narratorSpeed * dt;
+	  if (narratorX <= narratorLeftTargetX) {
+		narratorX = narratorLeftTargetX;
+		narratorState = 'idle';
+		narratorActive = false; // stop off-screen
+	  }
+  }
+
 }

@@ -823,7 +823,7 @@ function startNarratorImage(img = narratorImg, pauseMs = narratorPauseMs) {
   narratorX = -narratorW;
   narratorY = height * 0.7;
 
-  narratorRightTargetX = width * 0.4 - narratorW / 2;
+  narratorRightTargetX = width * 0.25 - narratorW / 2;
   narratorLeftTargetX  = -narratorW - narratorMargin;
 
   narratorPauseMs = pauseMs;

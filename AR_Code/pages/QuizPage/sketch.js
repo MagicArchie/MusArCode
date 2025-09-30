@@ -390,25 +390,25 @@ function onAnswerSelected(index) {
 				  // ------- English delays -------
 				  switch (lastPage) {
 					case 'Video1':
-					  startNarratorImage(narratorImg, 30500);
+					  startNarratorImage(narratorImg, 32000);
 					  break;
 					case 'Video2':
-					  startNarratorImage(narratorImg, 38500);
+					  startNarratorImage(narratorImg, 38000);
 					  break;
 					case 'Video3':
-					  startNarratorImage(narratorImg, 31500);
+					  startNarratorImage(narratorImg, 31000);
 					  break;
 					case 'Video4':
-					  startNarratorImage(narratorImg, 29500);
+					  startNarratorImage(narratorImg, 30000);
 					  break;
 					case 'Video5':
-					  startNarratorImage(narratorImg, 22500);
+					  startNarratorImage(narratorImg, 23000);
 					  break;
 					case 'Video12':
-					  startNarratorImage(narratorImg, 71500);
+					  startNarratorImage(narratorImg, 71000);
 					  break;
 					default:
-					  startNarratorImage(narratorImg, 30500);
+					  startNarratorImage(narratorImg, 32000);
 				  }
 			  } else {
 				  // ------- Greek delays -------
@@ -426,10 +426,10 @@ function onAnswerSelected(index) {
 					  startNarratorImage(narratorImg, 39500);
 					  break;
 					case 'Video5':
-					  startNarratorImage(narratorImg, 16500);
+					  startNarratorImage(narratorImg, 17500);
 					  break;
 					case 'Video12':
-					  startNarratorImage(narratorImg, 56500);
+					  startNarratorImage(narratorImg, 57000);
 					  break;
 					default:
 					  startNarratorImage(narratorImg, 30500);
@@ -462,49 +462,49 @@ function onAnswerSelected(index) {
 			  // ------- English delays -------
 			  switch (lastPage) {
 				case 'Video1':
-				  redirectDelay = 28500;
+				  redirectDelay = 31000;
 				  break;
 				case 'Video2':
-				  redirectDelay = 36500;
+				  redirectDelay = 37000;
 				  break;
 				case 'Video3':
-				  redirectDelay = 29500;
+				  redirectDelay = 30000;
 				  break;
 				case 'Video4':
-				  redirectDelay = 27500;
+				  redirectDelay = 29000;
 				  break;
 				case 'Video5':
-				  redirectDelay = 20500;
+				  redirectDelay = 22000;
 				  break;
 				case 'Video12':
-				  redirectDelay = 69500;
+				  redirectDelay = 70000;
 				  break;
 				default:
-				  redirectDelay = 28500;
+				  redirectDelay = 31000;
 			  }
 			} else {
 			  // ------- Greek delays -------
 			  switch (lastPage) {
 				case 'Video1':
-				  redirectDelay = 28500;
+				  redirectDelay = 29500;
 				  break;
 				case 'Video2':
-				  redirectDelay = 30500;
-				  break;
-				case 'Video3':
 				  redirectDelay = 31500;
 				  break;
+				case 'Video3':
+				  redirectDelay = 32500;
+				  break;
 				case 'Video4':
-				  redirectDelay = 37500;
+				  redirectDelay = 38500;
 				  break;
 				case 'Video5':
-				  redirectDelay = 14500;
+				  redirectDelay = 16500;
 				  break;
 				case 'Video12':
-				  redirectDelay = 54500;
+				  redirectDelay = 56000;
 				  break;
 				default:
-				  redirectDelay = 28500;
+				  redirectDelay = 29500;
 			  }
 			}
 

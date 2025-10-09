@@ -3,6 +3,8 @@
 **MusArCode** (*Music, Art & Code*) is a **mobile-first interactive educational game** built with **HTML**, **CSS**, **JavaScript**, and the **p5.js** library.  
 It combines music, art, augmented reality (AR), and programming to create a learning experience conceptually based on the *Discover Corfu Old Town (DisCoT)* educational project — turning exploration and local history into a playful digital adventure.
 
+🎮 **Play Now:** [https://magicarchie.github.io/MusArCode/](https://magicarchie.github.io/MusArCode/)
+
 ---
 
 ## Overview  
@@ -12,7 +14,7 @@ The game automatically adapts to different screen sizes and **notifies players w
 
 Players explore a digital map of Corfu, scan AR markers, watch short videos, and answer quiz questions to unlock clues that gradually reveal a **hidden final phrase** — the secret name of the island they’re exploring.  
 
-Throughout the game, a **narrator** guides the player by providing **spoken hints and directions** for each location. The narration changes depending on the selected language (Greek or English) and helps players progress through the adventure naturally.
+Throughout the game, a **narrator** guides the player by providing **spoken hints and directions** for each location. The narration changes depending on the selected language (Greek or English) and helps players progress naturally through the adventure.
 
 ---
 
@@ -74,6 +76,31 @@ When the game starts:
 
 ---
 
+## Locations  
+
+Players explore some of the most iconic sites in Corfu’s Old Town, discovering their history and hidden details.  
+
+| # | Location | Description |
+|---|-----------|-------------|
+| 1 | Old Fortress | Byzantine-era fortification overlooking the sea |
+| 2 | Statue of Schulenburg | Monument to the defender of Corfu during the 1716 siege |
+| 3 | Palace of Saints George & Michael | Neoclassical palace housing the Museum of Asian Art |
+| 4 | Liston | Venetian arcade inspired by Paris’ Rue de Rivoli |
+| 5 | St. Spyridon Church | Famous for its bell tower and relics |
+| 6 | Venetian Well | Historic 17th-century stone well |
+| 7 | Metropolitan Church | Renaissance-style cathedral |
+| 8 | Gate of the New Fortress | Entrance featuring the Lion of Saint Mark |
+| 9 | Synagogue | Symbol of Corfu’s Jewish community |
+| 10 | Annunziata Monastery | Memorial of the Battle of Lepanto |
+| 11 | Duomo | Catholic cathedral dedicated to St. James & Christopher |
+| 12 | Town Hall (Loggia dei Nobilei) | Renaissance civic building and the final destination |
+
+*Note:*  
+- **Junior Hunt (Easy)** includes 6 of these locations.  
+- **Master Hunt (Hard)** includes all 12, unlocking the complete story and final puzzle.
+
+---
+
 ## Platform  
 
 - **Mobile only** (Android and iOS browsers)  
@@ -93,7 +120,7 @@ When the game starts:
 
 ---
 
-## Running the Game  
+## Running the Game Locally  
 
 Clone the repository:  
 ```bash

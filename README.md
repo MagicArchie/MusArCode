@@ -118,6 +118,22 @@ Players explore some of the most iconic sites in Corfu’s Old Town, discovering
 - **p5.js** – graphics rendering and input handling  
 - *(Optional)* **AR.js / WebXR** – marker-based AR support  
 
+## License  
+
+This project is licensed under the **MIT License**.  
+
+---
+
+## Credits  
+
+- **Concept & Educational Framework:** Based on *Discover Corfu Old Town (DisCoT)*  
+- **Design & Development:** MagicArchie  
+- **Visual & Audio Assets:** Created and edited using **Adobe Photoshop**, **DaVinci Resolve**, and **Reaper**  
+- **Narration:** Dynamic hint system providing spoken guidance in **Greek** and **English**  
+- **Sound Sources:** [Pixabay](https://pixabay.com/) *(royalty-free sound effects and music)*  
+- **Libraries:** [p5.js](https://p5js.org/), [AR.js](https://aframe.io/blog/arjs/)  
+- **Inspiration:** Greek cultural heritage and interactive learning  
+
 ---
 
 ## Running the Game Locally  

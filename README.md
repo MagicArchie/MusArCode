@@ -1,6 +1,6 @@
 # MusArCode  
 
-**MusArCode** (*Music, Art & Code*) is a **mobile-first interactive educational game** built with **HTML**, **CSS**, **JavaScript**, and the **p5.js** library.  
+**MusArCode** (*Museumkit Augmented Reality Corfu-Code*) is a **mobile-first interactive educational game** built with **HTML**, **CSS**, **JavaScript**, and the **p5.js** library.  
 It combines music, art, augmented reality (AR), and programming to create a learning experience conceptually based on the *Discover Corfu Old Town (DisCoT)* educational project — turning exploration and local history into a playful digital adventure.
 
 🎮 **Play Now:** [https://magicarchie.github.io/MusArCode/](https://magicarchie.github.io/MusArCode/)
@@ -12,7 +12,8 @@ It combines music, art, augmented reality (AR), and programming to create a lear
 MusArCode is designed **exclusively for smartphones**.  
 The game automatically adapts to different screen sizes and **notifies players when to rotate their device** (portrait ↔ landscape) for the best experience.  
 
-Players explore a digital map of Corfu, scan AR markers, watch short videos, and answer quiz questions to unlock clues that gradually reveal a **hidden final phrase** — the secret name of the island they’re exploring.  
+Players explore a digital map of Corfu, scan AR markers, watch short videos, and answer quiz questions to unlock clues that gradually reveal a **hidden final phrase** — the secret name of the island they’re exploring and find out the final destination
+“The mysterious building with many faces”.
 
 Throughout the game, a **narrator** guides the player by providing **spoken hints and directions** for each location. The narration changes depending on the selected language (Greek or English) and helps players progress naturally through the adventure.
 
@@ -82,7 +83,7 @@ Players explore some of the most iconic sites in Corfu’s Old Town, discovering
 
 | # | Location | Description |
 |---|-----------|-------------|
-| 1 | Old Fortress | Byzantine-era fortification overlooking the sea |
+| 1 | Saint George Church-Old Fortress | Byzantine-era fortification overlooking the sea |
 | 2 | Statue of Schulenburg | Monument to the defender of Corfu during the 1716 siege |
 | 3 | Palace of Saints George & Michael | Neoclassical palace housing the Museum of Asian Art |
 | 4 | Liston | Venetian arcade inspired by Paris’ Rue de Rivoli |
